@@ -20,9 +20,9 @@ namespace PaymentsService.Services
             {
                 Id = evento.Id,
                 AggregateId = evento.AggregateId,
-                Tipo = evento.Tipo,
+                TipoEvento = evento.Tipo,
                 Dados = JsonSerializer.Serialize(evento),
-                Data = evento.Data
+                Timestamp = evento.Data
             };
 
             await _repository.AddAsync(storedEvent);
@@ -36,7 +36,7 @@ namespace PaymentsService.Services
             foreach (var e in eventos)
             {
                 var tipoCompleto = typeof(EventBase).Assembly.GetTypes()
-                    .FirstOrDefault(t => t.Name == e.Tipo);
+                    .FirstOrDefault(t => t.Name == e.TipoEvento);
 
                 if (tipoCompleto != null)
                 {

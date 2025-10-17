@@ -15,36 +15,36 @@ namespace PaymentsService.Repositories
             _context = context;
         }
 
-        public void SalvarEvento(EventBase evento)
+        public void SalvarEvento(StoredEvent evento)
         {
-            var entity = new EventEntity
+            var entity = new StoredEvent
             {
                 Id = evento.Id,
                 AggregateId = evento.AggregateId,
                 TipoEvento = evento.GetType().Name,
                 Dados = System.Text.Json.JsonSerializer.Serialize(evento),
-                //Timestamp = evento.Timestamp
+                Timestamp = evento.Timestamp
             };
 
-            _context.Eventos.Add(entity);
+            _context.StoredEvents.Add(entity);
             _context.SaveChanges();
         }
 
-        public IEnumerable<EventBase> ObterEventos(string aggregateId)
+        public IEnumerable<StoredEvent> ObterEventos(string aggregateId)
         {
-            var entities = _context.Eventos
+            var entities = _context.StoredEvents
                 .Where(e => e.AggregateId == aggregateId)
                 .OrderBy(e => e.Timestamp)
                 .ToList();
 
-            var eventos = new List<EventBase>();
+            var eventos = new List<StoredEvent>();
 
             foreach (var entity in entities)
             {
                 var tipo = Type.GetType($"PaymentsService.Domain.Events.{entity.TipoEvento}");
                 if (tipo != null)
                 {
-                    var evento = (EventBase?)System.Text.Json.JsonSerializer.Deserialize(entity.Dados, tipo);
+                    var evento = (StoredEvent?)System.Text.Json.JsonSerializer.Deserialize(entity.Dados, tipo);
                     if (evento != null)
                         eventos.Add(evento);
                 }

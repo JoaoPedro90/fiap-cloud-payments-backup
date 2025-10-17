@@ -22,7 +22,7 @@ namespace PaymentsService.Repositories
         {
             return await _context.StoredEvents
                 .Where(e => e.AggregateId == aggregateId)
-                .OrderBy(e => e.Data)
+                .OrderBy(e => e.Timestamp)
                 .ToListAsync();
         }
     }
